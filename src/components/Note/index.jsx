@@ -1,5 +1,5 @@
 import styles from './note.module.css';
-import { BsCheckSquareFill } from 'react-icons/bs';
+import { BsCheckCircleFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
 import { useState } from 'react';
 
@@ -15,7 +15,7 @@ export function Note({ note, handleEditNote, handleDeleteNote, handleCompleteNot
     <div className={styles.note}>
       <div className={styles.checkContainer}>
         <button className={styles.checkButton} onClick={() => handleCompleteNote(note.id)}>
-          {note.isCompleted ? <BsCheckSquareFill /> : <div />}
+          {note.isCompleted ? <BsCheckCircleFill /> : <div />}
         </button>
       </div>
       <div className={styles.noteDescriptionContainer}>
