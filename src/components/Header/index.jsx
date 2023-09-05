@@ -5,11 +5,11 @@ export function Header({ }) {
 
   return (
     <header className={styles.header}>
-      <div>
+      <>
         <a href="https://routefusion.com">
           <img className={styles.headerLogo} src={todofusionLogo} />
         </a>
-      </div>
+      </>
     </header>
   )
 }

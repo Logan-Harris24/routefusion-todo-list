@@ -22,7 +22,6 @@
   justify-content: center;
   height: 50px;
   width: 35%;
-  position: relative;
 }
   
   .newNoteForm input {
@@ -30,6 +29,7 @@
     flex: 1;
     color: #fff;
     background: #262626;
+    outline: none;
     border: 1px solid #0D0D0D;
     border-radius: 8px;
     padding: 0 16px;
@@ -40,6 +40,10 @@
     color: #808080;
   }
   
+  .borderRed{
+    border-color: #bb2d2d !important;
+  }
+
   .newNoteForm button {
     height: 100%;
     padding: 0 16px;
@@ -50,15 +54,18 @@
     display: flex;
     align-items: center;
     margin-left: 10px;
-    font-weight: 700;
+    font-weight: bold;
     font-size: 14px;
   }
   
 .counterContainer {
   display: flex;
+  height:20px;
   margin-top: 5px;
+  margin-left: 35%;
+  margin-right: 37.25%;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
 }
 
 .counterText {
