@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Header } from "./components/Header";
-import { NoteForm } from "./components/NoteForm";
-import { Notes } from "./components/Notes";
+import { Header } from "./components/Header/header";
+import { NoteForm } from "./components/NoteForm/noteform";
+import { Notes } from "./components/Notes/notes";
 
 const LOCAL_STORAGE_KEY = 'todo:notes';
 

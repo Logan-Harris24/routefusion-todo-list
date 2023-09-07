@@ -1,6 +1,6 @@
 import styles from './note.module.css';
 import 'react-tooltip/dist/react-tooltip.css'
-import { BsCheckCircleFill } from 'react-icons/bs';
+import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
 import { useState, useRef } from 'react';
 import { Tooltip } from 'react-tooltip'
@@ -24,7 +24,7 @@ export function Note({ note, handleEditNote, handleDeleteNote, handleCompleteNot
     <div className={styles.note}>
       <div className={styles.checkContainer}>
         <button className={styles.checkButton} onClick={() => handleCompleteNote(note.id)}>
-          {note.isCompleted ? <BsCheckCircleFill /> : <div />}
+          {note.isCompleted ? <BsCheckSquareFill /> : <div />}
         </button>
       </div>
       <div className={styles.noteDescriptionContainer}>
