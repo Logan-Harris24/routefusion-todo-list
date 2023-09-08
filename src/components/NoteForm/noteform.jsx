@@ -46,7 +46,7 @@ export function NoteForm({ handleCreateNote }) {
   
   return (
     <>
-      <ToastContainer autoClose={2500} />
+      <ToastContainer autoClose={4000} />
       <div className={styles.subheaderContainer}>
         <header>
           <p>What's on your to-do list?</p>
@@ -55,7 +55,7 @@ export function NoteForm({ handleCreateNote }) {
         <div className={styles.newNoteContainer}>
           <form onSubmit={handleSubmit} className={styles.newNoteForm}>
             <input
-              className={(!isValidDescription && isTyping && hasSubmitted) ? styles.borderRed : undefined}
+              className={(!isValidDescription && isTyping && hasSubmitted)  || (description.length > maxDescriptionLength) ? styles.borderRed : undefined}
               placeholder="Create a new note (e.g., Pick up Torchy's Tacos)"
               type="text"
               ref={noteRef}
@@ -71,9 +71,12 @@ export function NoteForm({ handleCreateNote }) {
           {(!isTyping)
               ? undefined
               : <>
-                <p className={styles.counterText}>Characters:</p>
-                <span className={(!isValidDescription && hasSubmitted) ? styles.counterNumberRed : styles.counterNumber}>{description.length}/{maxDescriptionLength}</span>
-                </>}
+                  <p className={styles.counterText}>Characters:</p>
+                  <span className={(!isValidDescription && hasSubmitted) || (description.length > maxDescriptionLength) ? styles.counterNumberRed : styles.counterNumber}>
+                    {description.length}/{maxDescriptionLength}
+                  </span>
+                </>
+          }
         </div>
     </>
   )

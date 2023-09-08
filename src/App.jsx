@@ -46,6 +46,12 @@ function App() {
     setNotesAndSave(newNotes);
   }
 
+  function deleteNotes(deletedNotes) {
+    console.log(deletedNotes);
+    const newNotes = notes.filter(note => !deletedNotes.includes(note));
+    setNotesAndSave(newNotes);
+  }
+
   function deleteNoteById(noteId) {
     const newNotes = notes.filter(note => note.id !== noteId);
     setNotesAndSave(newNotes);
@@ -68,7 +74,7 @@ function App() {
     <>
       <Header />
       <NoteForm handleCreateNote={createNote}/>
-      <Notes notes={notes} handleEditNote={editNoteById} handleDeleteNote={deleteNoteById} handleCompleteNote={toggleCompleteNoteById}/>
+      <Notes notes={notes} handleEditNotes={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNoteById}/>
     </>
   )
 }

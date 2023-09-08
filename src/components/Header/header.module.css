@@ -1,9 +1,10 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 100px;
-  position: relative;
+  justify-content: left;
+  height: 50px;
+  margin-top: 20px;
+  margin-left: 20px;
 }
 
 .headerLogo {

@@ -1,8 +1,7 @@
 .notes {
-  width: 60%;
+  width: 50%;
   margin: auto;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 20px;
 }
 
 .header {
@@ -44,4 +43,10 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.deleteButtonContainer button {
+  background: none;
+  border: none;
+  color: #bb2d2d;
 }

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 35px;
+  margin-top: 15px;
 }
 
 .subheaderContainer p{
@@ -28,7 +28,7 @@
     height: 100%;
     flex: 1;
     color: #fff;
-    background: #262626;
+    background: #424242;
     outline: none;
     border: 1px solid #0D0D0D;
     border-radius: 8px;
@@ -37,7 +37,7 @@
   }
   
   .newNoteForm input::placeholder {
-    color: #808080;
+    color: #b6b3b3;
   }
   
   .borderRed{
