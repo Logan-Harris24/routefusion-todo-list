@@ -6,18 +6,7 @@ import { Notes } from "./components/Notes/notes";
 const LOCAL_STORAGE_KEY = 'todo:notes';
 
 function App() {
-  const [notes, setNotes] = useState([]);
-
-  useEffect(() => {
-    loadSavedNotes();
-  }, [])
-  
-  function loadSavedNotes() {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if(saved) {
-      setNotes(JSON.parse(saved));
-    }
-  }
+  const [notes, setNotes] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)));
 
   function setNotesAndSave(newNotes) {
     setNotes(newNotes);
@@ -47,14 +36,25 @@ function App() {
   }
 
   function deleteNotes(deletedNotes) {
-    console.log(deletedNotes);
     const newNotes = notes.filter(note => !deletedNotes.includes(note));
-    setNotesAndSave(newNotes);
+    if(newNotes){
+      setNotesAndSave(newNotes);
+    }
   }
 
-  function deleteNoteById(noteId) {
-    const newNotes = notes.filter(note => note.id !== noteId);
-    setNotesAndSave(newNotes);
+  function toggleCompleteNotes(completedNotes) {
+    const newNotes = notes.map(note => {
+      if(completedNotes.some((completedNote) => completedNote.id === note.id)) {
+        return {
+          ...note,
+          isCompleted: !note.isCompleted
+        }
+      }
+      return note;
+    });
+    if(newNotes){
+      setNotesAndSave(newNotes);
+    }
   }
 
   function toggleCompleteNoteById(noteId) {
@@ -74,7 +74,7 @@ function App() {
     <>
       <Header />
       <NoteForm handleCreateNote={createNote}/>
-      <Notes notes={notes} handleEditNotes={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNoteById}/>
+      <Notes notes={notes} handleEditNotes={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNotes}/>
     </>
   )
 }

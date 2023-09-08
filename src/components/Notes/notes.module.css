@@ -45,6 +45,12 @@
   gap: 10px;
 }
 
+.completeButtonContainer button {
+  background: none;
+  border: none;
+  color: #26c77c;
+}
+
 .deleteButtonContainer button {
   background: none;
   border: none;

@@ -1,10 +1,11 @@
 import styles from './notes.module.css';
 import { useState, useMemo, useCallback } from 'react';
 import { DataTable } from "../DataTable/datatable";
+import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
-import { differenceBy } from 'lodash';
+import { RowMenu } from '../DataTable/RowMenu/rowmenu';
 
-export function Notes({ notes, handleEditNotes, handleSaveNotes, handleDeleteNotes, handleCompleteNotes }) {
+export function Notes({ notes, handleCompleteNotes, handleDeleteNotes }) {
   const notesQuantity = notes.length;
   const completedNotes = notes.filter(note => note.isCompleted).length;
   const incompleteNotes = (notesQuantity-completedNotes);
@@ -25,36 +26,41 @@ export function Notes({ notes, handleEditNotes, handleSaveNotes, handleDeleteNot
 	}, []);
   
 	const tableActions = useMemo(() => {
+		function handleComplete() {
+			if (window.confirm(`Are you sure you want to toggle completion for the selected notes?`)) {
+        handleCompleteNotes(selectedRows);
+				setToggleCleared(!toggleCleared);
+			}
+		};
+
 		function handleDelete() {
 			if (window.confirm(`Are you sure you want to delete the selected notes?`)) {
-				setToggleCleared(!toggleCleared);
         handleDeleteNotes(selectedRows);
+				setToggleCleared(!toggleCleared);
 			}
 		};
 
 		return (
-      <div className={styles.deleteButtonContainer}>
-        <button onClick={handleDelete}>
-          <BsTrash3 size={20} />
-        </button>
-      </div>
+      <>
+        <div className={styles.completeButtonContainer}>
+          <button onClick={handleComplete}>
+            <BsCheckSquareFill size={35}/>
+          </button>
+        </div>
+        <div className={styles.deleteButtonContainer}>
+          <button onClick={handleDelete}>
+            <BsTrash3 size={35}/>
+          </button>
+        </div>
+      </>
 		);
 	}, [selectedRows, toggleCleared]);
 
   const notesColumns = [
     {id: 'description', name: 'Description', selector: row => row.description, sortable: true},
-    {id: 'isCompleted', name: 'IsCompleted', selector: row => row.isCompleted ? 'Yes' : 'No', sortable: true},
+    {id: 'isCompleted', name: 'IsComplete', selector: row => row.isCompleted ? 'Yes' : 'No', sortable: true},
     {id: 'createdDate', name: 'CreatedDate', selector: row => row.createdDate.toString(), sortable: true},
-    {id: 'actions', name: '', button: true, cell: row => {
-        return (
-          <div className={styles.deleteButtonContainer}>
-            <button onClick={() => handleDeleteNotes([row])}>
-              <BsTrash3 size={20} />
-            </button>
-          </div>
-        )
-      }
-    },
+    {id: 'actions', name: '', button: true, cell: row => <RowMenu size="small" row={row} handleCompleteNotes={handleCompleteNotes} handleDeleteNotes={handleDeleteNotes}/>},
   ];
 
   return (
