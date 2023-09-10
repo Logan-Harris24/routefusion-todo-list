@@ -37,7 +37,6 @@
   float: left;
   width: 80%;
   height: 20px;
-  margin-left: 10px;
 }
 
 .noteDescriptionContainer p {
@@ -55,7 +54,7 @@
   width: 100%;
   font-size: 14px;
   line-height: 20px;
-  background: #1f3445;
+  background: #6e6e6e;
   color: #F2F2F2;
   border: none;
   outline: none;

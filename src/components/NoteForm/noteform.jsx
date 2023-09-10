@@ -1,10 +1,11 @@
 import styles from './noteform.module.css';
 import { useState, useRef } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import config from '../../../config.js';
 
-const minDescriptionLength = 1;
-const maxDescriptionLength = 100;
+const minDescriptionLength = config.minDescriptionLength;
+const maxDescriptionLength = config.maxDescriptionLength;
 
 export function NoteForm({ handleCreateNote }) {
   const [description, setDescription] = useState('');
@@ -13,7 +14,7 @@ export function NoteForm({ handleCreateNote }) {
   const noteRef = useRef(null);
   
   let charsRemaining = (maxDescriptionLength-description.length)
-  let isValidDescription = ((charsRemaining) >= 0 && (charsRemaining) < 100)
+  let isValidDescription = ((charsRemaining) >= (minDescriptionLength-1) && (charsRemaining) < maxDescriptionLength)
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -46,7 +47,6 @@ export function NoteForm({ handleCreateNote }) {
   
   return (
     <>
-      <ToastContainer autoClose={4000} />
       <div className={styles.subheaderContainer}>
         <header>
           <p>What's on your to-do list?</p>

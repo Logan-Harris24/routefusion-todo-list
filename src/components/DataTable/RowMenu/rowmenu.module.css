@@ -1,0 +1,19 @@
+.rowIconContainer {
+    cursor: pointer;
+    color: #1E90FF;
+}
+
+.iconComplete {
+    font-size: 25px;
+    color: #26c77c;
+}
+
+.iconEdit {
+    font-size: 25px;
+    color: #ffa600;
+}
+
+.iconDelete {
+    font-size: 25px;
+    color: #f10101;
+}

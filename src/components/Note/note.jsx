@@ -1,18 +1,53 @@
 import styles from './note.module.css';
 import 'react-tooltip/dist/react-tooltip.css'
-import { BsCheckSquareFill } from 'react-icons/bs';
-import { BsTrash3 } from 'react-icons/bs';
+import { toast } from 'react-toastify';
 import { useState, useRef } from 'react';
 import { Tooltip } from 'react-tooltip'
+import config from '../../../config.js';
+import useDynamicRefs from 'use-dynamic-refs';
 
-export function Note({ note, handleEditNote, handleDeleteNote, handleCompleteNote }) {
+const minDescriptionLength = config.minDescriptionLength;
+const maxDescriptionLength = config.maxDescriptionLength;
+
+export function Note({ note, handleEditNote }) {
+  const [description, setDescription] = useState(note.description);
   const [isEditing, setIsEditing] = useState(false);
   const [isNoteOverflowed, setIsNoteOverflowed] = useState(false);
-  const noteRef = useRef(null);
-  let overflowBool = `${isNoteOverflowed}`;
-
+  const [getRef, setRef] = useDynamicRefs();
+  const [isFocused, toggleIsFocused] = useState(false);
+    
+  let charsRemaining = (maxDescriptionLength-description.length)
+  let isValidDescription = ((charsRemaining) >= (minDescriptionLength-1) && (charsRemaining) < maxDescriptionLength)
+  
   function toggleEdit() {
+    console.log(isEditing);
     setIsEditing(!isEditing);
+    setDescription(note.description);
+  }
+
+  function focusNote() {
+    toggleIsFocused(!isFocused);
+  }
+  
+  function onChangeDescription(e) {
+    setDescription(e.target.value);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if(!isValidDescription){ 
+      toast.error(`Note must be between ${minDescriptionLength} and ${maxDescriptionLength} characters.`);
+      toggleEdit();
+    }
+    else{
+      if (description && description !== note.description){
+        handleEditNote(note.id,description.trim());
+        toast.success(`Note edited successfully!`);
+      }
+    }
+    if(!isFocused && (description.length <= maxDescriptionLength)){
+      toggleEdit();
+    }
   }
 
   function handleHover(e){
@@ -21,18 +56,12 @@ export function Note({ note, handleEditNote, handleDeleteNote, handleCompleteNot
 
 
   return (
-    <div className={styles.note}>
-      <div className={styles.checkContainer}>
-        <button className={styles.checkButton} onClick={() => handleCompleteNote(note.id)}>
-          {note.isCompleted ? <BsCheckSquareFill /> : <div />}
-        </button>
-      </div>
-      <div className={styles.noteDescriptionContainer}>
+    <>
+      <div ref={getRef(note.id)} className={styles.noteDescriptionContainer} onClick={toggleEdit} tabIndex="0" onFocus={focusNote}>
         {(!isEditing)
             ? <>
-                <p ref={noteRef}
-                  className={note.isCompleted ? styles.textCompleted : undefined}
-                  onClick={!note.isCompleted ? toggleEdit : undefined}
+                <p 
+                  className={note.isComplete ? styles.textCompleted : undefined}
                   onMouseOver={handleHover}
                   data-tooltip-id="my-tooltip"
                   data-tooltip-content={note.description}
@@ -43,14 +72,11 @@ export function Note({ note, handleEditNote, handleDeleteNote, handleCompleteNot
                 </p>
                 <Tooltip id="my-tooltip"/>
               </>
-            : <input autoFocus type="text" defaultValue={note.description} onChange={(e) => handleEditNote(note.id,e.target.value)} onBlur={toggleEdit}/>
+            : <form onSubmit={handleSubmit}>
+                <input autoFocus type="text" value={description} onChange={onChangeDescription} onBlur={handleSubmit}/>
+              </form>
         }
       </div>
-      <div className={styles.deleteButtonContainer}>
-        <button onClick={() => handleDeleteNote(note.id)}>
-          <BsTrash3 size={20} />
-        </button>
-      </div>
-    </div>
+    </>
   )
 }

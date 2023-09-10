@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Header } from "./components/Header/header";
 import { NoteForm } from "./components/NoteForm/noteform";
 import { Notes } from "./components/Notes/notes";
+import { ToastContainer } from 'react-toastify';
 
 const LOCAL_STORAGE_KEY = 'todo:notes';
 
@@ -17,7 +18,7 @@ function App() {
     setNotesAndSave([...notes, {
       id: crypto.randomUUID(),
       description: noteDescription,
-      isCompleted: false,
+      isComplete: false,
       createdDate: new Date()
     }]);
   }
@@ -47,7 +48,7 @@ function App() {
       if(completedNotes.some((completedNote) => completedNote.id === note.id)) {
         return {
           ...note,
-          isCompleted: !note.isCompleted
+          isComplete: !note.isComplete
         }
       }
       return note;
@@ -57,24 +58,12 @@ function App() {
     }
   }
 
-  function toggleCompleteNoteById(noteId) {
-    const newNotes = notes.map(note => {
-      if(note.id === noteId) {
-        return {
-          ...note,
-          isCompleted: !note.isCompleted
-        }
-      }
-      return note;
-    });
-    setNotesAndSave(newNotes);
-  }
-
   return (
     <>
       <Header />
+      <ToastContainer autoClose={4000} />
       <NoteForm handleCreateNote={createNote}/>
-      <Notes notes={notes} handleEditNotes={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNotes}/>
+      <Notes notes={notes} handleEditNote={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNotes}/>
     </>
   )
 }

@@ -1,18 +1,31 @@
 import styles from './notes.module.css';
-import { useState, useMemo, useCallback } from 'react';
-import { DataTable } from "../DataTable/datatable";
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
+import { DataTable } from "../DataTable/datatable";
+import { Note } from "../Note/note";
 import { RowMenu } from '../DataTable/RowMenu/rowmenu';
+import useDynamicRefs from 'use-dynamic-refs';
 
-export function Notes({ notes, handleCompleteNotes, handleDeleteNotes }) {
+export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDeleteNotes }) {
   const notesQuantity = notes.length;
-  const completedNotes = notes.filter(note => note.isCompleted).length;
+  const completedNotes = notes.filter(note => note.isComplete).length;
   const incompleteNotes = (notesQuantity-completedNotes);
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [toggleCleared, setToggleCleared] = useState(false);
 	const [searchText, setSearchText] = useState('');
+  const [getRef, setRef] = useDynamicRefs();
   
+  function focusNote(note){
+    let noteRef = getRef(note.id);
+    noteRef.current.click();
+    noteRef.current.focus();
+  }
+
+	const handleRowSelected = useCallback(state => {
+		setSelectedRows(state.selectedRows);
+	}, []);
+
 	const searchBarMemo = useMemo(() => {
 		return (
 			<input type='text' placeholder='Search By Description' onChange={e => setSearchText(e.target.value)}/>
@@ -21,11 +34,7 @@ export function Notes({ notes, handleCompleteNotes, handleDeleteNotes }) {
   
 	const searchedNotes = notes.filter(note => note.description && note.description.toLowerCase().includes(searchText.toLowerCase()));
   
-	const handleRowSelected = useCallback(state => {
-		setSelectedRows(state.selectedRows);
-	}, []);
-  
-	const tableActions = useMemo(() => {
+	const tableActionsMemo = useMemo(() => {
 		function handleComplete() {
 			if (window.confirm(`Are you sure you want to toggle completion for the selected notes?`)) {
         handleCompleteNotes(selectedRows);
@@ -44,12 +53,12 @@ export function Notes({ notes, handleCompleteNotes, handleDeleteNotes }) {
       <>
         <div className={styles.completeButtonContainer}>
           <button onClick={handleComplete}>
-            <BsCheckSquareFill size={35}/>
+            <BsCheckSquareFill/>
           </button>
         </div>
         <div className={styles.deleteButtonContainer}>
           <button onClick={handleDelete}>
-            <BsTrash3 size={35}/>
+            <BsTrash3/>
           </button>
         </div>
       </>
@@ -57,10 +66,16 @@ export function Notes({ notes, handleCompleteNotes, handleDeleteNotes }) {
 	}, [selectedRows, toggleCleared]);
 
   const notesColumns = [
-    {id: 'description', name: 'Description', selector: row => row.description, sortable: true},
-    {id: 'isCompleted', name: 'IsComplete', selector: row => row.isCompleted ? 'Yes' : 'No', sortable: true},
-    {id: 'createdDate', name: 'CreatedDate', selector: row => row.createdDate.toString(), sortable: true},
-    {id: 'actions', name: '', button: true, cell: row => <RowMenu size="small" row={row} handleCompleteNotes={handleCompleteNotes} handleDeleteNotes={handleDeleteNotes}/>},
+    {id: 'description', name: 'Description', sortable: true, selector: note => note.description, cell: note => <Note note={note} noteRef={setRef(note.id)} handleEditNote={handleEditNote} />},
+    {id: 'isComplete', name: 'IsComplete', sortable: true, selector: note => note.isComplete.toString(), center: true,
+      cell: note =>
+        (note.isComplete)
+        ? <div className={styles.completeButtonContainer}>
+            <BsCheckSquareFill color='#26c77c'/>
+          </div>
+        : undefined},
+    {id: 'createdDate', name: 'CreatedDate', sortable: true, selector: note => note.createdDate.toString()},
+    {id: 'actions', name: '', button: true, cell: note => <RowMenu note={note} handleCompleteNotes={handleCompleteNotes} focusNote={focusNote} handleDeleteNotes={handleDeleteNotes}/>},
   ];
 
   return (
@@ -83,7 +98,7 @@ export function Notes({ notes, handleCompleteNotes, handleDeleteNotes }) {
         fixedHeaderScrollHeight="489px"
         subHeader
         subHeaderComponent={searchBarMemo}
-        contextActions={tableActions}
+        contextActions={tableActionsMemo}
         onSelectedRowsChange={handleRowSelected}
         clearSelectedRows={toggleCleared}
       />

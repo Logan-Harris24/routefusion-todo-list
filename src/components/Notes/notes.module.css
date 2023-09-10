@@ -49,10 +49,12 @@
   background: none;
   border: none;
   color: #26c77c;
+  font-size: 35px;
 }
 
 .deleteButtonContainer button {
   background: none;
   border: none;
   color: #bb2d2d;
+  font-size: 35px;
 }
