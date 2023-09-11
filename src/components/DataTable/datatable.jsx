@@ -1,10 +1,10 @@
 import React from 'react';
 import DataTableBase, { createTheme } from 'react-data-table-component';
 import Checkbox from '@mui/material/Checkbox';
-import ArrowDownward from '@mui/icons-material/ArrowDownward';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { createTheme as createMuiTheme, ThemeProvider, styled } from '@mui/material/styles';
 
-const sortIcon = <ArrowDownward />;
+const sortIcon = <KeyboardArrowDownIcon />;
 const paginationComponentOptions = { selectAllRowsItem: true, selectAllRowsItemText: 'All' };
 const checkboxTheme = createMuiTheme({ status: { primary: '#1E90FF', }, });
 const checkboxProps = { indeterminate: isIndeterminate => isIndeterminate };
@@ -46,6 +46,11 @@ createTheme('customTheme', {
   });
 
   const customStyles = {
+    header: {
+      style: {
+        height: '10px'
+      }
+    },
     rows: {
       highlightOnHoverStyle: {
         borderRadius: '50px',
@@ -61,13 +66,13 @@ export function DataTable(props) {
               customStyles={customStyles}
               striped
               dense
-              sortIcon={sortIcon}
               highlightOnHover
               selectableRows
               selectableRowsComponent={CustomCheckboxComponent}
               selectableRowsComponentProps={checkboxProps}
               pagination
               paginationComponentOptions={paginationComponentOptions}
+              paginationRowsPerPageOptions={[10,25,50]}
               {...props}
           />
         </ThemeProvider>

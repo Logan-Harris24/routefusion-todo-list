@@ -19,8 +19,14 @@ export function NoteForm({ handleCreateNote }) {
   function handleSubmit(e) {
     e.preventDefault();
 
+    let trimmedDescription = description.trim();
+
     if(!isValidDescription){ 
       toast.error(`Note must be between ${minDescriptionLength} and ${maxDescriptionLength} characters.`);
+    }
+    else if(trimmedDescription.length === (minDescriptionLength-1)){
+      toast.error(`Note must be non-empty.`);
+      setDescription('');
     }
     else{
       handleCreateNote(description.trim());
@@ -44,6 +50,12 @@ export function NoteForm({ handleCreateNote }) {
       setHasSubmitted(true);
     }
   }
+
+  function handleKeyDown(e) {
+    if(noteRef.current && e.key === "Escape"){
+      noteRef.current.blur();
+    }
+  }
   
   return (
     <>
@@ -63,6 +75,7 @@ export function NoteForm({ handleCreateNote }) {
               onFocus={handleIsTyping}
               onBlur={handleIsTyping}
               onChange={onChangeDescription}
+              onKeyDown={handleKeyDown}
             />
             <button onClick={handleSubmitClick}>Create</button>
           </form>

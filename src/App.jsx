@@ -1,13 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./components/Header/header";
 import { NoteForm } from "./components/NoteForm/noteform";
 import { Notes } from "./components/Notes/notes";
+import { ConfirmModal } from "./components/ConfirmModal/confirmmodal";
 import { ToastContainer } from 'react-toastify';
+import config from '../config.js';
 
 const LOCAL_STORAGE_KEY = 'todo:notes';
 
 function App() {
-  const [notes, setNotes] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)));
+  const [notes, setNotes] = useState(JSON.parse(localStorage.getItem(config.localStorageKey)));
+  const getData=()=>{
+    fetch('./data/notes.json',
+      {
+        headers : { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    )
+    .then(function(response){
+      console.log(response);
+      return response.json();
+    })
+    .then(function(json) {
+      console.log(json);
+      setNotes(json);
+    });
+  }
+
+  useEffect(()=>{
+    getData()
+  },[])
 
   function setNotesAndSave(newNotes) {
     setNotes(newNotes);
@@ -61,6 +85,7 @@ function App() {
   return (
     <>
       <Header />
+      <ConfirmModal />
       <ToastContainer autoClose={4000} />
       <NoteForm handleCreateNote={createNote}/>
       <Notes notes={notes} handleEditNote={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNotes}/>

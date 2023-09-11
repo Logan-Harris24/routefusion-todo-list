@@ -1,5 +1,5 @@
 .notes {
-  width: 50%;
+  width: 52%;
   margin: auto;
   margin-top: 20px;
 }
@@ -46,6 +46,12 @@
   gap: 10px;
 }
 
+.completeRowIconContainer {
+  cursor: pointer;
+  display: flex;
+  margin-right: 20px;
+}
+
 .contextContainer {
   width: 400px;
   display: flex;
@@ -55,7 +61,6 @@
 .completeActionContainer {
   cursor: pointer;
   display: flex;
-  align-items: center;
   height:25px;
 }
 

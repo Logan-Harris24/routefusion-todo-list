@@ -12,6 +12,7 @@ export function Note({ note, handleEditNote }) {
   const [description, setDescription] = useState(note.description);
   const [isEditing, setIsEditing] = useState(false);
   const [isNoteOverflowed, setIsNoteOverflowed] = useState(false);
+  const noteRef = useRef(null);
     
   let charsRemaining = (maxDescriptionLength-description.length)
   let isValidDescription = ((charsRemaining) >= (minDescriptionLength-1) && (charsRemaining) < maxDescriptionLength)
@@ -27,8 +28,9 @@ export function Note({ note, handleEditNote }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    
     if(!isValidDescription){ 
-      toast.error(`Note must be between ${minDescriptionLength} and ${maxDescriptionLength} characters.`);
+      toast.error(`Note must be non-empty, between ${minDescriptionLength} and ${maxDescriptionLength} characters.`);
       toggleEdit();
     }
     else{
@@ -46,6 +48,12 @@ export function Note({ note, handleEditNote }) {
     setIsNoteOverflowed((e.target.offsetWidth < e.target.scrollWidth));
   }
 
+  function handleKeyDown(e) {
+    if(noteRef.current && e.key === "Escape"){
+      noteRef.current.blur();
+    }
+  }
+
   return (
     <>
       <div className={styles.noteDescriptionContainer}>
@@ -55,17 +63,17 @@ export function Note({ note, handleEditNote }) {
                   className={note.isCompleted ? styles.textCompleted : undefined}
                   onMouseOver={handleHover}
                   onClick={note.isCompleted ? undefined : toggleEdit}
-                  data-tooltip-id="my-tooltip"
+                  data-tooltip-id="noteTooltip"
                   data-tooltip-content={note.description}
                   data-tooltip-place="bottom-start"
                   data-tooltip-hidden={!isNoteOverflowed}
                 >
                   {note.description}
                 </p>
-                <Tooltip id="my-tooltip"/>
+                <Tooltip id="noteTooltip"/>
               </>
             : <form onSubmit={handleSubmit}>
-                <input autoFocus type="text" value={description} onChange={onChangeDescription} onBlur={handleSubmit}/>
+                <input ref={noteRef} autoFocus type="text" value={description} onChange={onChangeDescription} onBlur={handleSubmit} onKeyDown={handleKeyDown}/>
               </form>
         }
       </div>

@@ -7,6 +7,7 @@ import { Note } from "../Note/note";
 import { RowMenu } from '../DataTable/RowMenu/rowmenu';
 import { SearchBar } from '../DataTable/SearchBar/searchbar';
 import moment from 'moment/moment';
+import { modal } from '../ConfirmModal/confirmmodal';
 
 export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDeleteNotes }) {
   const notesQuantity = notes.length;
@@ -40,25 +41,23 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
   
 	const tableActionsMemo = useMemo(() => {
 		function handleComplete() {
-			if (window.confirm(`Are you sure you want to toggle the completion status for the selected notes?`)) {
-        handleCompleteNotes(selectedRows);
-				setToggleCleared(!toggleCleared);
-			}
+      handleCompleteNotes(selectedRows);
+      setToggleCleared(!toggleCleared);
 		};
 
 		function handleDelete() {
-			if (window.confirm(`Are you sure you want to delete the selected notes?`)) {
         handleDeleteNotes(selectedRows);
 				setToggleCleared(!toggleCleared);
-			}
 		};
 
 		return (
       <div className={styles.contextContainer}>
-        <div className={styles.completeActionContainer} onClick={handleComplete}>
+        <div className={styles.completeActionContainer}
+          onClick={() => {modal(`Are you sure you want to toggle completion status for all selected notes?`, () => {handleComplete()})}}>
           <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Toggle Completion</span>
         </div>
-        <div className={styles.deleteActionContainer} onClick={handleDelete}>
+        <div className={styles.deleteActionContainer}
+          onClick={() => {modal(`Are you sure you want to delete all selected notes?`, () => {handleDelete()})}}>
           <BsTrash3 className={styles.deleteActionIcon}/> <span>Delete</span>
         </div>
       </div>
@@ -66,26 +65,22 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
 	}, [selectedRows, toggleCleared]);
 
   const getFormattedDate = (note) => {
-    var now = moment();
     var date = moment(note.createdDate);
-    var defaultFormat = 'ddd, MMM DD';
-    var yearFormat = 'yyyy'
-
-    var dateFormat = (now.year === date.year) ? defaultFormat : (`${defaultFormat}, ${yearFormat}`);
-    return date.format(dateFormat);
+    var defaultFormat = 'ddd, MMM DD yyyy';
+    return date.format(defaultFormat);
   };
 
   const notesColumns = [
-    {id: 'description', name: 'Description', sortable: true, selector: note => note.description, cell: note => <Note note={note} handleEditNote={handleEditNote} />},
-    {id: 'isCompleted', name: 'Completed?', sortable: true, selector: note => note.isCompleted.toString(), center: true,
+    {id: 'description', name: 'Description', sortable: true, width: "575px", selector: note => note.description, cell: note => <Note note={note} handleEditNote={handleEditNote} />},
+    {id: 'isCompleted', name: 'Completed?', sortable: true, width: "125px", selector: note => note.isCompleted.toString(), center: true,
       cell: note =>
         (note.isCompleted)
-        ? <div className={styles.completeButtonContainer}>
-            <BsCheckSquareFill color='#26c77c'/>
+        ? <div className={styles.completeRowIconContainer}>
+            <BsCheckSquareFill size={15} color='#26c77c'/>
           </div>
         : undefined},
-    {id: 'createdDate', name: 'CreatedDate', sortable: true, selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
-    {id: 'actions', name: '', button: true, cell: note => <RowMenu note={note} handleCompleteNotes={handleCompleteNotes} handleDeleteNotes={handleDeleteNotes}/>},
+    {id: 'createdDate', name: 'CreatedDate', sortable: true, width: "160px", selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
+    {id: 'actions', name: '', button: true, width: "70px", cell: note => <RowMenu note={note} handleCompleteNotes={handleCompleteNotes} handleDeleteNotes={handleDeleteNotes}/>},
   ];
 
   return (
@@ -108,6 +103,7 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
         fixedHeaderScrollHeight="489px"
         subHeader
         subHeaderComponent={searchBarMemo}
+        subHeaderAlign="right"
         contextActions={tableActionsMemo}
         onSelectedRowsChange={handleRowSelected}
         clearSelectedRows={toggleCleared}
