@@ -5,30 +5,34 @@ import { BsTrash3 } from 'react-icons/bs';
 import { DataTable } from "../DataTable/datatable";
 import { Note } from "../Note/note";
 import { RowMenu } from '../DataTable/RowMenu/rowmenu';
-import useDynamicRefs from 'use-dynamic-refs';
+import { SearchBar } from '../DataTable/SearchBar/searchbar';
+import moment from 'moment/moment';
 
 export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDeleteNotes }) {
   const notesQuantity = notes.length;
-  const completedNotes = notes.filter(note => note.isComplete).length;
+  const completedNotes = notes.filter(note => note.isCompleted).length;
   const incompleteNotes = (notesQuantity-completedNotes);
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [toggleCleared, setToggleCleared] = useState(false);
 	const [searchText, setSearchText] = useState('');
-  const [getRef, setRef] = useDynamicRefs();
-  
-  function focusNote(note){
-    let noteRef = getRef(note.id);
-    noteRef.current.click();
-    noteRef.current.focus();
-  }
 
 	const handleRowSelected = useCallback(state => {
 		setSelectedRows(state.selectedRows);
 	}, []);
 
+  function handleSearch(e){
+    setSearchText(e.target.value)
+  }
+
 	const searchBarMemo = useMemo(() => {
+		const handleClear = () => {
+			if (searchText) {
+				setSearchText('');
+			}
+		};
+
 		return (
-			<input type='text' placeholder='Search By Description' onChange={e => setSearchText(e.target.value)}/>
+      <SearchBar searchText={searchText} onSearch={handleSearch} onClear={handleClear}/>
 		);
 	}, [searchText]);
   
@@ -36,7 +40,7 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
   
 	const tableActionsMemo = useMemo(() => {
 		function handleComplete() {
-			if (window.confirm(`Are you sure you want to toggle completion for the selected notes?`)) {
+			if (window.confirm(`Are you sure you want to toggle the completion status for the selected notes?`)) {
         handleCompleteNotes(selectedRows);
 				setToggleCleared(!toggleCleared);
 			}
@@ -50,32 +54,38 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
 		};
 
 		return (
-      <>
-        <div className={styles.completeButtonContainer}>
-          <button onClick={handleComplete}>
-            <BsCheckSquareFill/>
-          </button>
+      <div className={styles.contextContainer}>
+        <div className={styles.completeActionContainer} onClick={handleComplete}>
+          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Toggle Completion</span>
         </div>
-        <div className={styles.deleteButtonContainer}>
-          <button onClick={handleDelete}>
-            <BsTrash3/>
-          </button>
+        <div className={styles.deleteActionContainer} onClick={handleDelete}>
+          <BsTrash3 className={styles.deleteActionIcon}/> <span>Delete</span>
         </div>
-      </>
+      </div>
 		);
 	}, [selectedRows, toggleCleared]);
 
+  const getFormattedDate = (note) => {
+    var now = moment();
+    var date = moment(note.createdDate);
+    var defaultFormat = 'ddd, MMM DD';
+    var yearFormat = 'yyyy'
+
+    var dateFormat = (now.year === date.year) ? defaultFormat : (`${defaultFormat}, ${yearFormat}`);
+    return date.format(dateFormat);
+  };
+
   const notesColumns = [
-    {id: 'description', name: 'Description', sortable: true, selector: note => note.description, cell: note => <Note note={note} noteRef={setRef(note.id)} handleEditNote={handleEditNote} />},
-    {id: 'isComplete', name: 'IsComplete', sortable: true, selector: note => note.isComplete.toString(), center: true,
+    {id: 'description', name: 'Description', sortable: true, selector: note => note.description, cell: note => <Note note={note} handleEditNote={handleEditNote} />},
+    {id: 'isCompleted', name: 'Completed?', sortable: true, selector: note => note.isCompleted.toString(), center: true,
       cell: note =>
-        (note.isComplete)
+        (note.isCompleted)
         ? <div className={styles.completeButtonContainer}>
             <BsCheckSquareFill color='#26c77c'/>
           </div>
         : undefined},
-    {id: 'createdDate', name: 'CreatedDate', sortable: true, selector: note => note.createdDate.toString()},
-    {id: 'actions', name: '', button: true, cell: note => <RowMenu note={note} handleCompleteNotes={handleCompleteNotes} focusNote={focusNote} handleDeleteNotes={handleDeleteNotes}/>},
+    {id: 'createdDate', name: 'CreatedDate', sortable: true, selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
+    {id: 'actions', name: '', button: true, cell: note => <RowMenu note={note} handleCompleteNotes={handleCompleteNotes} handleDeleteNotes={handleDeleteNotes}/>},
   ];
 
   return (
@@ -86,7 +96,7 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
           <span>{notesQuantity}</span>
           <p className={styles.textIncomplete}>Incomplete</p>
           <span>{incompleteNotes}</span>
-          <p className={styles.textCompleted}>Complete</p>
+          <p className={styles.textCompleted}>Completed</p>
           <span>{completedNotes}</span>
         </div>
       </header>
@@ -101,6 +111,7 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
         contextActions={tableActionsMemo}
         onSelectedRowsChange={handleRowSelected}
         clearSelectedRows={toggleCleared}
+        contextMessage={{ singular: 'note', plural: 'notes', message: 'selected' }}
       />
     </div>
   )

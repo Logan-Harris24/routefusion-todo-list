@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { useState, useRef } from 'react';
 import { Tooltip } from 'react-tooltip'
 import config from '../../../config.js';
-import useDynamicRefs from 'use-dynamic-refs';
 
 const minDescriptionLength = config.minDescriptionLength;
 const maxDescriptionLength = config.maxDescriptionLength;
@@ -13,20 +12,13 @@ export function Note({ note, handleEditNote }) {
   const [description, setDescription] = useState(note.description);
   const [isEditing, setIsEditing] = useState(false);
   const [isNoteOverflowed, setIsNoteOverflowed] = useState(false);
-  const [getRef, setRef] = useDynamicRefs();
-  const [isFocused, toggleIsFocused] = useState(false);
     
   let charsRemaining = (maxDescriptionLength-description.length)
   let isValidDescription = ((charsRemaining) >= (minDescriptionLength-1) && (charsRemaining) < maxDescriptionLength)
   
   function toggleEdit() {
-    console.log(isEditing);
     setIsEditing(!isEditing);
     setDescription(note.description);
-  }
-
-  function focusNote() {
-    toggleIsFocused(!isFocused);
   }
   
   function onChangeDescription(e) {
@@ -45,7 +37,7 @@ export function Note({ note, handleEditNote }) {
         toast.success(`Note edited successfully!`);
       }
     }
-    if(!isFocused && (description.length <= maxDescriptionLength)){
+    if((description.length <= maxDescriptionLength) || (!isValidDescription) || (description === note.description)){
       toggleEdit();
     }
   }
@@ -54,15 +46,15 @@ export function Note({ note, handleEditNote }) {
     setIsNoteOverflowed((e.target.offsetWidth < e.target.scrollWidth));
   }
 
-
   return (
     <>
-      <div ref={getRef(note.id)} className={styles.noteDescriptionContainer} onClick={toggleEdit} tabIndex="0" onFocus={focusNote}>
+      <div className={styles.noteDescriptionContainer}>
         {(!isEditing)
             ? <>
                 <p 
-                  className={note.isComplete ? styles.textCompleted : undefined}
+                  className={note.isCompleted ? styles.textCompleted : undefined}
                   onMouseOver={handleHover}
+                  onClick={note.isCompleted ? undefined : toggleEdit}
                   data-tooltip-id="my-tooltip"
                   data-tooltip-content={note.description}
                   data-tooltip-place="bottom-start"

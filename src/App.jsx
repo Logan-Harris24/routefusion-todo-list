@@ -18,7 +18,7 @@ function App() {
     setNotesAndSave([...notes, {
       id: crypto.randomUUID(),
       description: noteDescription,
-      isComplete: false,
+      isCompleted: false,
       createdDate: new Date()
     }]);
   }
@@ -48,7 +48,7 @@ function App() {
       if(completedNotes.some((completedNote) => completedNote.id === note.id)) {
         return {
           ...note,
-          isComplete: !note.isComplete
+          isCompleted: !note.isCompleted
         }
       }
       return note;

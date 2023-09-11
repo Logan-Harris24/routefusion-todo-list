@@ -5,7 +5,6 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { BsCheckSquareFill } from 'react-icons/bs';
-import { CiEdit } from 'react-icons/ci';
 import { BsTrash3 } from 'react-icons/bs';
 
 export function RowMenu ({ note, handleCompleteNotes, focusNote, handleDeleteNotes }) {
@@ -20,7 +19,7 @@ export function RowMenu ({ note, handleCompleteNotes, focusNote, handleDeleteNot
 	};
 
     function handleComplete() {
-        if (window.confirm(`Are you sure you want to toggle completion for the selected note?`)) {
+        if (window.confirm(`Are you sure you want to toggle completion status for the selected note?`)) {
             handleClose();
             handleCompleteNotes([note]);
         }
@@ -59,14 +58,8 @@ export function RowMenu ({ note, handleCompleteNotes, focusNote, handleDeleteNot
                             <BsCheckSquareFill className={styles.iconComplete}/>
                         </ListItemIcon>
                         {
-                            (note.isComplete ? 'Mark as incomplete' : 'Mark as complete')
+                            (note.isCompleted ? 'Mark as uncompleted' : 'Mark as completed')
                         }
-                    </MenuItem>
-                    <MenuItem onClick={handleEdit}>
-                        <ListItemIcon>
-                            <CiEdit className={styles.iconEdit}/>
-                        </ListItemIcon>
-                        Edit Description
                     </MenuItem>
                     <MenuItem onClick={handleDelete}>
                         <ListItemIcon>
