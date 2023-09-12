@@ -53,7 +53,7 @@
 }
 
 .contextContainer {
-  width: 400px;
+  width: 350px;
   display: flex;
   justify-content: space-evenly;
 }
@@ -61,7 +61,7 @@
 .completeActionContainer {
   cursor: pointer;
   display: flex;
-  height:25px;
+  align-items: center;
 }
 
 .completeActionIcon {

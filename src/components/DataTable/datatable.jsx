@@ -1,10 +1,8 @@
 import React from 'react';
 import DataTableBase, { createTheme } from 'react-data-table-component';
 import Checkbox from '@mui/material/Checkbox';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { createTheme as createMuiTheme, ThemeProvider, styled } from '@mui/material/styles';
 
-const sortIcon = <KeyboardArrowDownIcon />;
 const paginationComponentOptions = { selectAllRowsItem: true, selectAllRowsItemText: 'All' };
 const checkboxTheme = createMuiTheme({ status: { primary: '#1E90FF', }, });
 const checkboxProps = { indeterminate: isIndeterminate => isIndeterminate };

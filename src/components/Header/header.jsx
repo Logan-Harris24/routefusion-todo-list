@@ -5,11 +5,9 @@ export function Header({ }) {
 
   return (
     <header className={styles.header}>
-      <>
-        <a href="https://routefusion.com">
-          <img className={styles.headerLogo} src={todofusionLogo} />
-        </a>
-      </>
+      <a href="https://routefusion.com">
+        <img className={styles.headerLogo} src={todofusionLogo} />
+      </a>
     </header>
   )
 }

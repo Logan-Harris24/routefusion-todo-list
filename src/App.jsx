@@ -6,36 +6,32 @@ import { ConfirmModal } from "./components/ConfirmModal/confirmmodal";
 import { ToastContainer } from 'react-toastify';
 import config from '../config.js';
 
-const LOCAL_STORAGE_KEY = 'todo:notes';
-
 function App() {
-  const [notes, setNotes] = useState(JSON.parse(localStorage.getItem(config.localStorageKey)));
-  const getData=()=>{
-    fetch('./data/notes.json',
-      {
-        headers : { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    )
-    .then(function(response){
-      console.log(response);
-      return response.json();
-    })
-    .then(function(json) {
-      console.log(json);
-      setNotes(json);
-    });
-  }
+  const [notes, setNotes] = useState(
+    (localStorage.getItem(config.localStorageKey))
+      ? JSON.parse(localStorage.getItem(config.localStorageKey))
+      : []
+  );
 
   useEffect(()=>{
-    getData()
+    if(config.useMockData) {
+      getMockData();
+    }
   },[])
+
+  const getMockData=()=>{
+    fetch('/data/notes.json')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        localStorage.setItem(config.localStorageKey, JSON.stringify(json));
+      });
+  }
 
   function setNotesAndSave(newNotes) {
     setNotes(newNotes);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newNotes));
+    localStorage.setItem(config.localStorageKey, JSON.stringify(newNotes));
   }
 
   function createNote(noteDescription) {
@@ -67,6 +63,21 @@ function App() {
     }
   }
 
+  function completeNotes(completedNotes) {
+    const newNotes = notes.map(note => {
+      if(completedNotes.some((completedNote) => completedNote.id === note.id)) {
+        return {
+          ...note,
+          isCompleted: true
+        }
+      }
+      return note;
+    });
+    if(newNotes){
+      setNotesAndSave(newNotes);
+    }
+  }
+
   function toggleCompleteNotes(completedNotes) {
     const newNotes = notes.map(note => {
       if(completedNotes.some((completedNote) => completedNote.id === note.id)) {
@@ -84,11 +95,17 @@ function App() {
 
   return (
     <>
-      <Header />
-      <ConfirmModal />
-      <ToastContainer autoClose={4000} />
-      <NoteForm handleCreateNote={createNote}/>
-      <Notes notes={notes} handleEditNote={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={toggleCompleteNotes}/>
+      <ConfirmModal/>
+      <ToastContainer autoClose={4000}/>
+      <div data-testid="appHeader">
+        <Header/>
+      </div>
+      <div data-testid="appNoteForm">
+        <NoteForm handleCreateNote={createNote}/>
+      </div>
+      <div data-testid="appNotes">
+        <Notes notes={notes} handleEditNote={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={completeNotes} handleToggleCompleteNotes={toggleCompleteNotes}/>
+      </div>
     </>
   )
 }

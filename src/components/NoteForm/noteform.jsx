@@ -67,6 +67,7 @@ export function NoteForm({ handleCreateNote }) {
         <div className={styles.newNoteContainer}>
           <form onSubmit={handleSubmit} className={styles.newNoteForm}>
             <input
+              data-testid="noteFormInput"
               className={(!isValidDescription && isTyping && hasSubmitted)  || (description.length > maxDescriptionLength) ? styles.borderRed : undefined}
               placeholder="Create a new note (e.g., Pick up Torchy's Tacos)"
               type="text"
@@ -83,12 +84,12 @@ export function NoteForm({ handleCreateNote }) {
         <div className={styles.counterContainer}>
           {(!isTyping)
               ? undefined
-              : <>
+              : <div data-testid="noteFormCounter">
                   <p className={styles.counterText}>Characters:</p>
                   <span className={(!isValidDescription && hasSubmitted) || (description.length > maxDescriptionLength) ? styles.counterNumberRed : styles.counterNumber}>
                     {description.length}/{maxDescriptionLength}
                   </span>
-                </>
+                </div>
           }
         </div>
     </>

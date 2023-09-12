@@ -8,8 +8,9 @@ import { RowMenu } from '../DataTable/RowMenu/rowmenu';
 import { SearchBar } from '../DataTable/SearchBar/searchbar';
 import moment from 'moment/moment';
 import { modal } from '../ConfirmModal/confirmmodal';
+import config from '../../../config.js';
 
-export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDeleteNotes }) {
+export function Notes({ notes, handleEditNote, handleDeleteNotes, handleCompleteNotes, handleToggleCompleteNotes}) {
   const notesQuantity = notes.length;
   const completedNotes = notes.filter(note => note.isCompleted).length;
   const incompleteNotes = (notesQuantity-completedNotes);
@@ -53,8 +54,8 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
 		return (
       <div className={styles.contextContainer}>
         <div className={styles.completeActionContainer}
-          onClick={() => {modal(`Are you sure you want to toggle completion status for all selected notes?`, () => {handleComplete()})}}>
-          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Toggle Completion</span>
+          onClick={() => {modal(`Are you sure you want to complete all selected notes?`, () => {handleComplete()})}}>
+          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Mark as completed</span>
         </div>
         <div className={styles.deleteActionContainer}
           onClick={() => {modal(`Are you sure you want to delete all selected notes?`, () => {handleDelete()})}}>
@@ -80,12 +81,12 @@ export function Notes({ notes, handleCompleteNotes, handleEditNote, handleDelete
           </div>
         : undefined},
     {id: 'createdDate', name: 'CreatedDate', sortable: true, width: "160px", selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
-    {id: 'actions', name: '', button: true, width: "70px", cell: note => <RowMenu note={note} handleCompleteNotes={handleCompleteNotes} handleDeleteNotes={handleDeleteNotes}/>},
+    {id: 'actions', name: '', button: true, width: "70px", cell: note => <RowMenu note={note} handleDeleteNotes={handleDeleteNotes} handleToggleCompleteNotes={handleToggleCompleteNotes}/>},
   ];
 
   return (
     <div className={styles.notes}>
-      <header className={styles.header}>
+      <header data-testid="notesHeader" className={styles.header}>
         <div>
           <p>All</p>
           <span>{notesQuantity}</span>

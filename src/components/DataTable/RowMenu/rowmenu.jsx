@@ -7,7 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
 
-export function RowMenu ({ note, handleCompleteNotes, handleDeleteNotes }) {
+export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes }) {
 	const [menuAnchor, setMenuAnchor] = useState(null);
     
 	function handleClick(e){
@@ -20,7 +20,7 @@ export function RowMenu ({ note, handleCompleteNotes, handleDeleteNotes }) {
 
   function handleComplete() {
       handleClose();
-      handleCompleteNotes([note]);
+      handleToggleCompleteNotes([note]);
   };
 
   function handleDelete() {
@@ -42,7 +42,7 @@ export function RowMenu ({ note, handleCompleteNotes, handleDeleteNotes }) {
 				onClose={handleClose}
 			> 
         <div>
-            <MenuItem onClick={handleComplete}>
+            <MenuItem data-testid="rowMenuComplete" onClick={handleComplete}>
                 <ListItemIcon>
                     <BsCheckSquareFill className={styles.iconComplete}/>
                 </ListItemIcon>
@@ -50,7 +50,7 @@ export function RowMenu ({ note, handleCompleteNotes, handleDeleteNotes }) {
                     (note.isCompleted ? 'Mark as uncompleted' : 'Mark as completed')
                 }
             </MenuItem>
-            <MenuItem onClick={handleDelete}>
+            <MenuItem data-testid="rowMenuDelete" onClick={handleDelete}>
                 <ListItemIcon>
                     <BsTrash3 className={styles.iconDelete}/>
                 </ListItemIcon>
