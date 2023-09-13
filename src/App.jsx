@@ -29,13 +29,13 @@ function App() {
       });
   }
 
-  function setNotesAndSave(newNotes) {
+  function saveNotes(newNotes) {
     setNotes(newNotes);
     localStorage.setItem(config.localStorageKey, JSON.stringify(newNotes));
   }
 
   function createNote(noteDescription) {
-    setNotesAndSave([...notes, {
+    saveNotes([...notes, {
       id: crypto.randomUUID(),
       description: noteDescription,
       isCompleted: false,
@@ -53,13 +53,13 @@ function App() {
       }
       return note;
     });
-    setNotesAndSave(newNotes);
+    saveNotes(newNotes);
   }
 
   function deleteNotes(deletedNotes) {
     const newNotes = notes.filter(note => !deletedNotes.includes(note));
     if(newNotes){
-      setNotesAndSave(newNotes);
+      saveNotes(newNotes);
     }
   }
 
@@ -74,7 +74,7 @@ function App() {
       return note;
     });
     if(newNotes){
-      setNotesAndSave(newNotes);
+      saveNotes(newNotes);
     }
   }
 
@@ -89,7 +89,7 @@ function App() {
       return note;
     });
     if(newNotes){
-      setNotesAndSave(newNotes);
+      saveNotes(newNotes);
     }
   }
 
@@ -104,7 +104,13 @@ function App() {
         <NoteForm handleCreateNote={createNote}/>
       </div>
       <div data-testid="appNotes">
-        <Notes notes={notes} handleEditNote={editNoteById} handleDeleteNotes={deleteNotes} handleCompleteNotes={completeNotes} handleToggleCompleteNotes={toggleCompleteNotes}/>
+        <Notes
+          notes={notes}
+          handleEditNote={editNoteById}
+          handleDeleteNotes={deleteNotes}
+          handleCompleteNotes={completeNotes}
+          handleToggleCompleteNotes={toggleCompleteNotes}
+        />
       </div>
     </>
   )

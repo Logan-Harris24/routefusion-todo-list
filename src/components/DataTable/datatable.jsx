@@ -27,20 +27,20 @@ createTheme('customTheme', {
         background: '#1E90FF',
         text: '#FFFFFF',
     },
-		button: {
-			default: '#FFFFFF',
-			focus: '#1f3445',
-			hover: 'rgba(255, 255, 255, .12)',
-			disabled: 'rgba(255, 255, 255, .18)',
-		},
-		highlightOnHover: {
-			default: '#525252',
-			text: '#FFFFFF',
-		},
-		striped: {
-			default: '#283e50',
-			text: '#FFFFFF',
-		},
+    button: {
+      default: '#FFFFFF',
+      focus: '#1f3445',
+      hover: 'rgba(255, 255, 255, .12)',
+      disabled: 'rgba(255, 255, 255, .18)',
+    },
+    highlightOnHover: {
+      default: '#525252',
+      text: '#FFFFFF',
+    },
+    striped: {
+      default: '#283e50',
+      text: '#FFFFFF',
+    },
   });
 
   const customStyles = {

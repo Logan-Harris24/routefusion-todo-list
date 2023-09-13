@@ -17,14 +17,22 @@
   gap: 8px;
 }
 
+.headerSelected {
+  background: #1f3445;
+  padding: 5px 8px;
+  border-radius: 99px;
+  cursor: pointer;
+}
+
 .header p {
   color: #1E90FF;
   font-size: 15px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .header span {
-  background: #1f3445;
+  background: #424242;
   color: #D9D9D9;
   padding: 3px 9px;
   border-radius: 99px;
@@ -32,7 +40,7 @@
   font-weight: bold;
 }
 
-.textCompleted {
+.textComplete {
   color: #26c77c !important;
 }
 

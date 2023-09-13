@@ -64,34 +64,34 @@ export function NoteForm({ handleCreateNote }) {
           <p>What's on your to-do list?</p>
         </header>
       </div>
-        <div className={styles.newNoteContainer}>
-          <form onSubmit={handleSubmit} className={styles.newNoteForm}>
-            <input
-              data-testid="noteFormInput"
-              className={(!isValidDescription && isTyping && hasSubmitted)  || (description.length > maxDescriptionLength) ? styles.borderRed : undefined}
-              placeholder="Create a new note (e.g., Pick up Torchy's Tacos)"
-              type="text"
-              ref={noteRef}
-              value={description}
-              onFocus={handleIsTyping}
-              onBlur={handleIsTyping}
-              onChange={onChangeDescription}
-              onKeyDown={handleKeyDown}
-            />
-            <button onClick={handleSubmitClick}>Create</button>
-          </form>
-        </div>
-        <div className={styles.counterContainer}>
-          {(!isTyping)
-              ? undefined
-              : <div data-testid="noteFormCounter">
-                  <p className={styles.counterText}>Characters:</p>
-                  <span className={(!isValidDescription && hasSubmitted) || (description.length > maxDescriptionLength) ? styles.counterNumberRed : styles.counterNumber}>
-                    {description.length}/{maxDescriptionLength}
-                  </span>
-                </div>
-          }
-        </div>
+      <div className={styles.newNoteContainer}>
+        <form onSubmit={handleSubmit} className={styles.newNoteForm}>
+          <input
+            data-testid="noteFormInput"
+            className={(!isValidDescription && isTyping && hasSubmitted)  || (description.length > maxDescriptionLength) ? styles.borderRed : undefined}
+            placeholder="Create a new note (e.g., Pick up Torchy's Tacos)"
+            type="text"
+            ref={noteRef}
+            value={description}
+            onFocus={handleIsTyping}
+            onBlur={handleIsTyping}
+            onChange={onChangeDescription}
+            onKeyDown={handleKeyDown}
+          />
+          <button onClick={handleSubmitClick}>Create</button>
+        </form>
+      </div>
+      <div data-testid="noteFormCounter" className={styles.counterContainer}>
+        {(!isTyping)
+            ? undefined
+            : <>
+                <p className={styles.counterText}>Characters:</p>
+                <span className={(!isValidDescription && hasSubmitted) || (description.length > maxDescriptionLength) ? styles.counterNumberRed : styles.counterNumber}>
+                  {description.length}/{maxDescriptionLength}
+                </span>
+              </>
+        }
+      </div>
     </>
   )
 }

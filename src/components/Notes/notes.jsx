@@ -1,5 +1,5 @@
 import styles from './notes.module.css';
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
 import { DataTable } from "../DataTable/datatable";
@@ -11,47 +11,61 @@ import { modal } from '../ConfirmModal/confirmmodal';
 import config from '../../../config.js';
 
 export function Notes({ notes, handleEditNote, handleDeleteNotes, handleCompleteNotes, handleToggleCompleteNotes}) {
-  const notesQuantity = notes.length;
-  const completedNotes = notes.filter(note => note.isCompleted).length;
-  const incompleteNotes = (notesQuantity-completedNotes);
-	const [selectedRows, setSelectedRows] = useState([]);
-	const [toggleCleared, setToggleCleared] = useState(false);
-	const [searchText, setSearchText] = useState('');
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [toggleCleared, setToggleCleared] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [filteredNotes, setFilteredNotes] = useState(notes);
+  const totalNotes = notes.length;
+  const totalNotesComplete = notes.filter(note => note.isCompleted).length;
+  const totalNotesIncomplete = (totalNotes-totalNotesComplete);
 
-	const handleRowSelected = useCallback(state => {
-		setSelectedRows(state.selectedRows);
-	}, []);
+  const handleRowSelected = useCallback(state => {
+    setSelectedRows(state.selectedRows);
+  }, []);
+  
+  function handleFilter(e) {
+    let filterId = e.currentTarget.id;
+    let notesFiltered = (filterId !== config.filterAll)
+      ? (filterId === config.filterComplete)
+        ? notes.filter(note => note.isCompleted)
+        : notes.filter(note => !note.isCompleted)
+      : notes;
+    setFilteredNotes(notesFiltered);
+
+    const filterElements = document.querySelectorAll(`#${config.filterContainer} *`);
+    filterElements.forEach((element) => {element.classList.remove(styles.headerSelected)});
+    e.currentTarget.className = styles.headerSelected;
+  };
 
   function handleSearch(e){
     setSearchText(e.target.value)
   }
 
-	const searchBarMemo = useMemo(() => {
-		const handleClear = () => {
-			if (searchText) {
-				setSearchText('');
-			}
-		};
+  const searchBarMemo = useMemo(() => {
+    const handleClear = () => {
+      if (searchText) {
+        setSearchText('');
+      }
+    };
 
-		return (
+    return (
       <SearchBar searchText={searchText} onSearch={handleSearch} onClear={handleClear}/>
-		);
-	}, [searchText]);
+    );
+  }, [searchText]);
+  const notesSearched = notes.filter(note => (filteredNotes.includes(note)) && (note.description && note.description.toLowerCase().includes(searchText.toLowerCase())));
   
-	const searchedNotes = notes.filter(note => note.description && note.description.toLowerCase().includes(searchText.toLowerCase()));
-  
-	const tableActionsMemo = useMemo(() => {
-		function handleComplete() {
+  const tableActionsMemo = useMemo(() => {
+    function handleComplete() {
       handleCompleteNotes(selectedRows);
       setToggleCleared(!toggleCleared);
-		};
+    };
 
-		function handleDelete() {
+    function handleDelete() {
         handleDeleteNotes(selectedRows);
-				setToggleCleared(!toggleCleared);
-		};
+        setToggleCleared(!toggleCleared);
+    };
 
-		return (
+    return (
       <div className={styles.contextContainer}>
         <div className={styles.completeActionContainer}
           onClick={() => {modal(`Are you sure you want to complete all selected notes?`, () => {handleComplete()})}}>
@@ -62,10 +76,10 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
           <BsTrash3 className={styles.deleteActionIcon}/> <span>Delete</span>
         </div>
       </div>
-		);
-	}, [selectedRows, toggleCleared]);
+    );
+  }, [selectedRows, toggleCleared]);
 
-  const getFormattedDate = (note) => {
+  function getFormattedDate(note){
     var date = moment(note.createdDate);
     var defaultFormat = 'ddd, MMM DD yyyy';
     return date.format(defaultFormat);
@@ -73,7 +87,7 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
 
   const notesColumns = [
     {id: 'description', name: 'Description', sortable: true, width: "575px", selector: note => note.description, cell: note => <Note note={note} handleEditNote={handleEditNote} />},
-    {id: 'isCompleted', name: 'Completed?', sortable: true, width: "125px", selector: note => note.isCompleted.toString(), center: true,
+    {id: 'isCompleted', name: 'Complete?', sortable: true, width: "125px", selector: note => note.isCompleted.toString(), center: true,
       cell: note =>
         (note.isCompleted)
         ? <div className={styles.completeRowIconContainer}>
@@ -87,21 +101,33 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
   return (
     <div className={styles.notes}>
       <header data-testid="notesHeader" className={styles.header}>
-        <div>
-          <p>All</p>
-          <span>{notesQuantity}</span>
-          <p className={styles.textIncomplete}>Incomplete</p>
-          <span>{incompleteNotes}</span>
-          <p className={styles.textCompleted}>Completed</p>
-          <span>{completedNotes}</span>
+        <div id={config.filterContainer}>
+          <div id={config.filterAll} className={styles.headerSelected} onClick={handleFilter}>
+            <p>All</p>
+            <span>{totalNotes}</span>
+          </div>
+          <div id={config.filterIncomplete} onClick={handleFilter}>
+            <p className={styles.textIncomplete}>Incomplete</p>
+            <span>{totalNotesIncomplete}</span>
+          </div>
+          <div id={config.filterComplete} onClick={handleFilter}>
+            <p className={styles.textComplete}>Complete</p>
+            <span>{totalNotesComplete}</span>
+          </div>
         </div>
       </header>
       <DataTable
         title="To-Do List"
         columns={notesColumns}
-        data={(!searchText) ? notes : searchedNotes}
+        data={
+          (!searchText)
+            ? (filteredNotes)
+              ? notes.filter(note => filteredNotes.includes(note))
+              : notes
+            : notesSearched
+        }
         fixedHeader
-        fixedHeaderScrollHeight="489px"
+        fixedHeaderScrollHeight="472px"
         subHeader
         subHeaderComponent={searchBarMemo}
         subHeaderAlign="right"

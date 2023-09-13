@@ -19,13 +19,13 @@ export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes })
 	};
 
   function handleComplete() {
-      handleClose();
-      handleToggleCompleteNotes([note]);
+    handleClose();
+    handleToggleCompleteNotes([note]);
   };
 
   function handleDelete() {
-      handleClose();
-      handleDeleteNotes([note]);
+    handleClose();
+    handleDeleteNotes([note]);
   };
 
 	return (
@@ -33,29 +33,22 @@ export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes })
 			<div className={styles.rowIconContainer} onClick={handleClick}>
 				<MoreVertIcon />
 			</div>
-			<Menu
-				id="menu"
-				keepMounted
-				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-				anchorEl={menuAnchor}
-				open={Boolean(menuAnchor)}
-				onClose={handleClose}
-			> 
+			<Menu id="menu" keepMounted anchorOrigin={{vertical: 'top', horizontal: 'right'}} anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleClose}> 
         <div>
-            <MenuItem data-testid="rowMenuComplete" onClick={handleComplete}>
-                <ListItemIcon>
-                    <BsCheckSquareFill className={styles.iconComplete}/>
-                </ListItemIcon>
-                {
-                    (note.isCompleted ? 'Mark as uncompleted' : 'Mark as completed')
-                }
-            </MenuItem>
-            <MenuItem data-testid="rowMenuDelete" onClick={handleDelete}>
-                <ListItemIcon>
-                    <BsTrash3 className={styles.iconDelete}/>
-                </ListItemIcon>
-                Delete
-            </MenuItem>
+          <MenuItem data-testid="rowMenuComplete" onClick={handleComplete}>
+            <ListItemIcon>
+              <BsCheckSquareFill className={styles.iconComplete}/>
+            </ListItemIcon>
+            {
+              (note.isCompleted ? 'Mark as uncompleted' : 'Mark as completed')
+            }
+          </MenuItem>
+          <MenuItem data-testid="rowMenuDelete" onClick={handleDelete}>
+            <ListItemIcon>
+              <BsTrash3 className={styles.iconDelete}/>
+            </ListItemIcon>
+            Delete
+          </MenuItem>
         </div>
 			</Menu>
 		</>
