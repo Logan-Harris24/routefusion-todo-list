@@ -122,7 +122,10 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
         data={
           (!searchText)
             ? (filteredNotes)
-              ? notes.filter(note => filteredNotes.includes(note))
+              ? notes.filter(note =>
+                  (filteredNotes.includes(note))
+                  || (!filteredNotes[0].isCompleted && ((note.createdDate) > (new Date(Math.max(...filteredNotes.map(element => { return new Date(element.createdDate); }))))))
+                )
               : notes
             : notesSearched
         }
