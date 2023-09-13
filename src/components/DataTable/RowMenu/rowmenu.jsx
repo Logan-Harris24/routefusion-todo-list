@@ -8,15 +8,15 @@ import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
 
 export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes }) {
-	const [menuAnchor, setMenuAnchor] = useState(null);
+  const [menuAnchor, setMenuAnchor] = useState(null);
     
-	function handleClick(e){
-		setMenuAnchor(e.currentTarget);
-	};
+  function handleClick(e){
+    setMenuAnchor(e.currentTarget);
+  };
 
-	function handleClose(){
-		setMenuAnchor(null);
-	};
+  function handleClose(){
+    setMenuAnchor(null);
+  };
 
   function handleComplete() {
     handleClose();
@@ -28,12 +28,12 @@ export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes })
     handleDeleteNotes([note]);
   };
 
-	return (
-		<>
-			<div className={styles.rowIconContainer} onClick={handleClick}>
-				<MoreVertIcon />
-			</div>
-			<Menu id="menu" keepMounted anchorOrigin={{vertical: 'top', horizontal: 'right'}} anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleClose}> 
+  return (
+    <>
+      <div className={styles.rowIconContainer} onClick={handleClick}>
+        <MoreVertIcon />
+      </div>
+      <Menu id="menu" keepMounted anchorOrigin={{vertical: 'top', horizontal: 'right'}} anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleClose}> 
         <div>
           <MenuItem data-testid="rowMenuComplete" onClick={handleComplete}>
             <ListItemIcon>
@@ -50,7 +50,7 @@ export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes })
             Delete
           </MenuItem>
         </div>
-			</Menu>
-		</>
-	);
+      </Menu>
+    </>
+  );
 };

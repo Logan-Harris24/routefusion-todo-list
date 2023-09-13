@@ -58,24 +58,24 @@ export function Note({ note, handleEditNote }) {
     <>
       <div className={styles.noteDescriptionContainer}>
         {(!isEditing)
-            ? <>
-                <p 
-                  className={note.isCompleted ? styles.textCompleted : undefined}
-                  onMouseOver={handleHover}
-                  onClick={note.isCompleted ? undefined : toggleEdit}
-                  data-testid="noteDescription"
-                  data-tooltip-id="noteTooltip"
-                  data-tooltip-content={note.description}
-                  data-tooltip-place="bottom-start"
-                  data-tooltip-hidden={!isNoteOverflowed}
-                >
-                  {note.description}
-                </p>
-                <Tooltip id="noteTooltip"/>
-              </>
-            : <form onSubmit={handleSubmit}>
-                <input ref={noteRef} data-testid="noteInput" autoFocus type="text" value={description} onChange={onChangeDescription} onBlur={handleSubmit} onKeyDown={handleKeyDown}/>
-              </form>
+          ? <>
+              <p 
+                className={note.isCompleted ? styles.textCompleted : undefined}
+                onMouseOver={handleHover}
+                onClick={note.isCompleted ? undefined : toggleEdit}
+                data-testid="noteDescription"
+                data-tooltip-id="noteTooltip"
+                data-tooltip-content={note.description}
+                data-tooltip-place="bottom-start"
+                data-tooltip-hidden={!isNoteOverflowed}
+              >
+                {note.description}
+              </p>
+              <Tooltip id="noteTooltip"/>
+            </>
+          : <form onSubmit={handleSubmit}>
+              <input ref={noteRef} data-testid="noteInput" autoFocus type="text" value={description} onChange={onChangeDescription} onBlur={handleSubmit} onKeyDown={handleKeyDown}/>
+            </form>
         }
       </div>
     </>

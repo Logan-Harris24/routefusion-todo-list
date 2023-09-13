@@ -20,8 +20,7 @@ describe('App', () => {
 
   it('renders default table state', () => {
     render(<App />);
-    const text = screen.getByText("There are no records to display");
-    expect(text).toBeInTheDocument();
+    expect(screen.getByText("There are no records to display")).toBeInTheDocument();
   });
 
   it('renders default header', () => {

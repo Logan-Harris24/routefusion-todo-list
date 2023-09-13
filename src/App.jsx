@@ -78,6 +78,21 @@ function App() {
     }
   }
 
+  function unCompleteNotes(uncompletedNotes) {
+    const newNotes = notes.map(note => {
+      if(uncompletedNotes.some((uncompletedNote) => uncompletedNote.id === note.id)) {
+        return {
+          ...note,
+          isCompleted: false
+        }
+      }
+      return note;
+    });
+    if(newNotes){
+      saveNotes(newNotes);
+    }
+  }
+
   function toggleCompleteNotes(completedNotes) {
     const newNotes = notes.map(note => {
       if(completedNotes.some((completedNote) => completedNote.id === note.id)) {
@@ -109,6 +124,7 @@ function App() {
           handleEditNote={editNoteById}
           handleDeleteNotes={deleteNotes}
           handleCompleteNotes={completeNotes}
+          handleUncompleteNotes={unCompleteNotes}
           handleToggleCompleteNotes={toggleCompleteNotes}
         />
       </div>

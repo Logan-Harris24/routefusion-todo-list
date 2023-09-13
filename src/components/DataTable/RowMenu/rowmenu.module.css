@@ -1,19 +1,30 @@
 .rowIconContainer {
-    cursor: pointer;
-    color: #1E90FF;
+  cursor: pointer;
+  color: #1E90FF;
+  border-radius: 99px;
+  padding: 3px;
+}
+
+.rowIconContainer svg{
+  display: block;
+  margin: auto;
+}
+
+.rowIconContainer:hover {
+  background: #6e6e6e;
 }
 
 .iconComplete {
-    font-size: 25px;
-    color: #26c77c;
+  font-size: 25px;
+  color: #26c77c;
 }
 
 .iconEdit {
-    font-size: 25px;
-    color: #ffa600;
+  font-size: 25px;
+  color: #ffa600;
 }
 
 .iconDelete {
-    font-size: 25px;
-    color: #f10101;
+  font-size: 25px;
+  color: #f10101;
 }

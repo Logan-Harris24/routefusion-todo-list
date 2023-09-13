@@ -83,13 +83,13 @@ export function NoteForm({ handleCreateNote }) {
       </div>
       <div data-testid="noteFormCounter" className={styles.counterContainer}>
         {(!isTyping)
-            ? undefined
-            : <>
-                <p className={styles.counterText}>Characters:</p>
-                <span className={(!isValidDescription && hasSubmitted) || (description.length > maxDescriptionLength) ? styles.counterNumberRed : styles.counterNumber}>
-                  {description.length}/{maxDescriptionLength}
-                </span>
-              </>
+          ? undefined
+          : <>
+              <p className={styles.counterText}>Characters:</p>
+              <span className={(!isValidDescription && hasSubmitted) || (description.length > maxDescriptionLength) ? styles.counterNumberRed : styles.counterNumber}>
+                {description.length}/{maxDescriptionLength}
+              </span>
+            </>
         }
       </div>
     </>

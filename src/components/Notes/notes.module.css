@@ -61,7 +61,7 @@
 }
 
 .contextContainer {
-  width: 350px;
+  width: 550px;
   display: flex;
   justify-content: space-evenly;
 }
@@ -75,6 +75,18 @@
 .completeActionIcon {
   color: #26c77c;
   font-size: 25px;
+  margin-right: 5px;
+}
+
+.uncompleteActionContainer {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.uncompleteActionIcon {
+  color: #f3e13c;
+  font-size: 30px;
   margin-right: 5px;
 }
 

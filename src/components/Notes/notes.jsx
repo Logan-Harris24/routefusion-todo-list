@@ -2,15 +2,16 @@ import styles from './notes.module.css';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { BsCheckSquareFill } from 'react-icons/bs';
 import { BsTrash3 } from 'react-icons/bs';
+import { MdOutlineCheckBoxOutlineBlank } from 'react-icons/md';
 import { DataTable } from "../DataTable/datatable";
 import { Note } from "../Note/note";
 import { RowMenu } from '../DataTable/RowMenu/rowmenu';
 import { SearchBar } from '../DataTable/SearchBar/searchbar';
-import moment from 'moment/moment';
 import { modal } from '../ConfirmModal/confirmmodal';
+import moment from 'moment/moment';
 import config from '../../../config.js';
 
-export function Notes({ notes, handleEditNote, handleDeleteNotes, handleCompleteNotes, handleToggleCompleteNotes}) {
+export function Notes({ notes, handleEditNote, handleDeleteNotes, handleCompleteNotes, handleUncompleteNotes, handleToggleCompleteNotes}) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [toggleCleared, setToggleCleared] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -18,7 +19,7 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
   const totalNotes = notes.length;
   const totalNotesComplete = notes.filter(note => note.isCompleted).length;
   const totalNotesIncomplete = (totalNotes-totalNotesComplete);
-
+  
   const handleRowSelected = useCallback(state => {
     setSelectedRows(state.selectedRows);
   }, []);
@@ -30,6 +31,10 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
         ? notes.filter(note => note.isCompleted)
         : notes.filter(note => !note.isCompleted)
       : notes;
+    notesFiltered.map(noteFiltered => {
+      noteFiltered.filterId = filterId;
+      return noteFiltered;
+    })
     setFilteredNotes(notesFiltered);
 
     const filterElements = document.querySelectorAll(`#${config.filterContainer} *`);
@@ -52,6 +57,7 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
       <SearchBar searchText={searchText} onSearch={handleSearch} onClear={handleClear}/>
     );
   }, [searchText]);
+  
   const notesSearched = notes.filter(note => (filteredNotes.includes(note)) && (note.description && note.description.toLowerCase().includes(searchText.toLowerCase())));
   
   const tableActionsMemo = useMemo(() => {
@@ -60,16 +66,25 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
       setToggleCleared(!toggleCleared);
     };
 
+    function handleUncomplete() {
+      handleUncompleteNotes(selectedRows);
+      setToggleCleared(!toggleCleared);
+    };
+
     function handleDelete() {
-        handleDeleteNotes(selectedRows);
-        setToggleCleared(!toggleCleared);
+      handleDeleteNotes(selectedRows);
+      setToggleCleared(!toggleCleared);
     };
 
     return (
       <div className={styles.contextContainer}>
-        <div className={styles.completeActionContainer}
+      <div className={styles.completeActionContainer}
           onClick={() => {modal(`Are you sure you want to complete all selected notes?`, () => {handleComplete()})}}>
-          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Mark as completed</span>
+          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Mark completed</span>
+        </div>
+        <div className={styles.uncompleteActionContainer}
+          onClick={() => {modal(`Are you sure you want to uncomplete all selected notes?`, () => {handleUncomplete()})}}>
+          <MdOutlineCheckBoxOutlineBlank className={styles.uncompleteActionIcon}/> <span>Mark uncompleted</span>
         </div>
         <div className={styles.deleteActionContainer}
           onClick={() => {modal(`Are you sure you want to delete all selected notes?`, () => {handleDelete()})}}>
@@ -86,16 +101,21 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
   };
 
   const notesColumns = [
-    {id: 'description', name: 'Description', sortable: true, width: "575px", selector: note => note.description, cell: note => <Note note={note} handleEditNote={handleEditNote} />},
+    {id: 'description', name: 'Description', sortable: true, width: "575px", selector: note => note.description,
+      cell: note => <Note note={note} handleEditNote={handleEditNote} />
+    },
     {id: 'isCompleted', name: 'Complete?', sortable: true, width: "125px", selector: note => note.isCompleted.toString(), center: true,
       cell: note =>
         (note.isCompleted)
         ? <div className={styles.completeRowIconContainer}>
             <BsCheckSquareFill size={15} color='#26c77c'/>
           </div>
-        : undefined},
+        : undefined
+    },
     {id: 'createdDate', name: 'CreatedDate', sortable: true, width: "160px", selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
-    {id: 'actions', name: '', button: true, width: "70px", cell: note => <RowMenu note={note} handleDeleteNotes={handleDeleteNotes} handleToggleCompleteNotes={handleToggleCompleteNotes}/>},
+    {id: 'actions', name: '', button: true, width: "70px",
+      cell: note => <RowMenu note={note} handleDeleteNotes={handleDeleteNotes} handleToggleCompleteNotes={handleToggleCompleteNotes}/>
+    },
   ];
 
   return (
@@ -123,7 +143,13 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
           (!searchText)
             ? (filteredNotes)
               ? notes.filter(note =>
-                  (filteredNotes.includes(note))
+                  (filteredNotes.some((filteredNote) => filteredNote.id === note.id &&
+                    (  
+                      (filteredNote.filterId === config.filterAll)
+                      || (filteredNote.filterId === config.filterComplete && note.isCompleted)
+                      || (filteredNote.filterId === config.filterIncomplete && !note.isCompleted)
+                    )
+                  ))
                   || ((filteredNotes[0] && !filteredNotes[0].isCompleted) && ((note.createdDate) > (new Date(Math.max(...filteredNotes.map(element => { return new Date(element.createdDate); }))))))
                 )
               : notes
