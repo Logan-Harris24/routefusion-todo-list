@@ -14,7 +14,7 @@ function App() {
   );
 
   useEffect(()=>{
-    if(config.useMockData) {
+    if(config.useMockData && notes.length === 0) {
       getMockData();
     }
   },[])

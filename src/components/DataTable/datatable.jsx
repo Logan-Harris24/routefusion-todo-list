@@ -1,18 +1,5 @@
 import React from 'react';
 import DataTableBase, { createTheme } from 'react-data-table-component';
-import Radio from '@mui/material/Radio';
-import { createTheme as createMuiTheme, ThemeProvider, styled } from '@mui/material/styles';
-
-const paginationRowsPerPageOptions = [10,25,50,100];
-const checkboxTheme = createMuiTheme({ status: { primary: '#1E90FF', }, });
-const checkboxProps = { indeterminate: isIndeterminate => isIndeterminate };
-
-const CustomCheckboxComponent = styled(Radio)(({ theme }) => ({
-    color: theme.status.primary,
-    '&.Mui-checked': {
-      color: theme.status.primary,
-    },
-}));
 
 createTheme('customTheme', {
   text: {
@@ -73,20 +60,18 @@ const customStyles = {
 
 export function DataTable(props) {
   return (
-      <ThemeProvider theme={checkboxTheme}>
-        <DataTableBase
-            theme="customTheme"
-            customStyles={customStyles}
-            striped
-            dense
-            highlightOnHover
-            selectableRows
-            selectableRowsVisibleOnly
-            selectableRowsComponentProps={{ type: 'radio' }}
-            pagination
-            paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-            {...props}
-        />
-      </ThemeProvider>
+    <DataTableBase
+        theme="customTheme"
+        customStyles={customStyles}
+        striped
+        dense
+        highlightOnHover
+        selectableRows
+        selectableRowsVisibleOnly
+        selectableRowsComponentProps={{ type: 'radio' }}
+        pagination
+        paginationRowsPerPageOptions={[10,25,50,100]}
+        {...props}
+    />
   );
 }

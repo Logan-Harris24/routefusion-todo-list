@@ -145,7 +145,7 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
               ? notes.filter(note =>
                   (filteredNotes.some((filteredNote) => filteredNote.id === note.id &&
                     (  
-                      (filteredNote.filterId === config.filterAll)
+                      (!filteredNote.filterId || filteredNote.filterId === config.filterAll)
                       || (filteredNote.filterId === config.filterComplete && note.isCompleted)
                       || (filteredNote.filterId === config.filterIncomplete && !note.isCompleted)
                     )
@@ -157,13 +157,14 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
         }
         fixedHeader
         fixedHeaderScrollHeight="472px"
-        subHeader
+        subHeader={notes.length > 0}
         subHeaderComponent={searchBarMemo}
         subHeaderAlign="right"
         contextActions={tableActionsMemo}
+        contextMessage={{ singular: 'note', plural: 'notes', message: 'selected' }}
+        noDataComponent={<div style={{ padding: '24px' }}>No records to display. Create a note above to get started!</div>}
         onSelectedRowsChange={handleRowSelected}
         clearSelectedRows={toggleCleared}
-        contextMessage={{ singular: 'note', plural: 'notes', message: 'selected' }}
       />
     </div>
   )
