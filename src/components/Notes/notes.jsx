@@ -152,7 +152,6 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
         subHeaderAlign="right"
         contextActions={tableActionsMemo}
         contextMessage={{ singular: 'note', plural: 'notes', message: 'selected' }}
-        noDataComponent={<div style={{ padding: '24px' }}>No records to display. Create a note above to get started!</div>}
         onSelectedRowsChange={handleRowSelected}
         clearSelectedRows={toggleCleared}
       />
