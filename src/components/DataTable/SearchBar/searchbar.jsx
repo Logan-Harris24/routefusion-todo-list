@@ -8,7 +8,7 @@ export function SearchBar ({ searchText, onSearch, onClear }) {
         <div className={styles.searchBar}>
           <div>
             <TbSearch/>
-            <input type='text' placeholder='Search By Description' value={searchText} onChange={onSearch}/>
+            <input type='text' placeholder='Search by description' value={searchText} onChange={onSearch}/>
           </div>
           <button type="button" onClick={onClear}>
             Clear

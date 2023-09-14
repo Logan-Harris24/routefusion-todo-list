@@ -15,27 +15,18 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
   const [selectedRows, setSelectedRows] = useState([]);
   const [toggleCleared, setToggleCleared] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [filteredNotes, setFilteredNotes] = useState(notes);
+  const [activeFilter, setActiveFilter] = useState(`${config.filterAll}`);
   const totalNotes = notes.length;
   const totalNotesComplete = notes.filter(note => note.isCompleted).length;
   const totalNotesIncomplete = (totalNotes-totalNotesComplete);
-  
+
   const handleRowSelected = useCallback(state => {
     setSelectedRows(state.selectedRows);
   }, []);
   
   function handleFilter(e) {
     let filterId = e.currentTarget.id;
-    let notesFiltered = (filterId !== config.filterAll)
-      ? (filterId === config.filterComplete)
-        ? notes.filter(note => note.isCompleted)
-        : notes.filter(note => !note.isCompleted)
-      : notes;
-    notesFiltered.map(noteFiltered => {
-      noteFiltered.filterId = filterId;
-      return noteFiltered;
-    })
-    setFilteredNotes(notesFiltered);
+    setActiveFilter(filterId);
 
     const filterElements = document.querySelectorAll(`#${config.filterContainer} *`);
     filterElements.forEach((element) => {element.classList.remove(styles.headerSelected)});
@@ -58,7 +49,11 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
     );
   }, [searchText]);
   
-  const notesSearched = notes.filter(note => (filteredNotes.includes(note)) && (note.description && note.description.toLowerCase().includes(searchText.toLowerCase())));
+  const notesSearched = notes.filter(note =>
+    (((activeFilter === config.filterAll))
+      || ((activeFilter === config.filterComplete) && (note.isCompleted))
+      || ((activeFilter === config.filterIncomplete) && (!note.isCompleted)))
+    && (notes.includes(note)) && (note.description && note.description.toLowerCase().includes(searchText.toLowerCase())));
   
   const tableActionsMemo = useMemo(() => {
     function handleComplete() {
@@ -80,11 +75,11 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
       <div className={styles.contextContainer}>
       <div className={styles.completeActionContainer}
           onClick={() => {modal(`Are you sure you want to complete all selected notes?`, () => {handleComplete()})}}>
-          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Mark completed</span>
+          <BsCheckSquareFill className={styles.completeActionIcon}/> <span>Mark Completed</span>
         </div>
         <div className={styles.uncompleteActionContainer}
           onClick={() => {modal(`Are you sure you want to uncomplete all selected notes?`, () => {handleUncomplete()})}}>
-          <MdOutlineCheckBoxOutlineBlank className={styles.uncompleteActionIcon}/> <span>Mark uncompleted</span>
+          <MdOutlineCheckBoxOutlineBlank className={styles.uncompleteActionIcon}/> <span>Mark Uncompleted</span>
         </div>
         <div className={styles.deleteActionContainer}
           onClick={() => {modal(`Are you sure you want to delete all selected notes?`, () => {handleDelete()})}}>
@@ -101,10 +96,10 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
   };
 
   const notesColumns = [
-    {id: 'description', name: 'Description', sortable: true, width: "575px", selector: note => note.description,
+    {id: 'description', name: 'Description', sortable: true, width: "60%", selector: note => note.description,
       cell: note => <Note note={note} handleEditNote={handleEditNote} />
     },
-    {id: 'isCompleted', name: 'Complete?', sortable: true, width: "125px", selector: note => note.isCompleted.toString(), center: true,
+    {id: 'isCompleted', name: 'Complete?', sortable: true, width: "15%", selector: note => note.isCompleted.toString(), center: true,
       cell: note =>
         (note.isCompleted)
         ? <div className={styles.completeRowIconContainer}>
@@ -112,8 +107,8 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
           </div>
         : undefined
     },
-    {id: 'createdDate', name: 'CreatedDate', sortable: true, width: "160px", selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
-    {id: 'actions', name: '', button: true, width: "70px",
+    {id: 'createdDate', name: 'CreatedDate', sortable: true, width: "15%", selector: note => moment(note.createdDate), format: note => getFormattedDate(note), style: {cursor: 'default'}},
+    {id: 'actions', name: '', button: true, width: "5%",
       cell: note => <RowMenu note={note} handleDeleteNotes={handleDeleteNotes} handleToggleCompleteNotes={handleToggleCompleteNotes}/>
     },
   ];
@@ -141,16 +136,11 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
         columns={notesColumns}
         data={
           (!searchText)
-            ? (filteredNotes)
+            ? (activeFilter)
               ? notes.filter(note =>
-                  (filteredNotes.some((filteredNote) => filteredNote.id === note.id &&
-                    (  
-                      (!filteredNote.filterId || filteredNote.filterId === config.filterAll)
-                      || (filteredNote.filterId === config.filterComplete && note.isCompleted)
-                      || (filteredNote.filterId === config.filterIncomplete && !note.isCompleted)
-                    )
-                  ))
-                  || ((filteredNotes[0] && !filteredNotes[0].isCompleted) && ((note.createdDate) > (new Date(Math.max(...filteredNotes.map(element => { return new Date(element.createdDate); }))))))
+                  ((activeFilter === config.filterAll))
+                    || ((activeFilter === config.filterComplete) && (note.isCompleted))
+                    || ((activeFilter === config.filterIncomplete) && (!note.isCompleted))
                 )
               : notes
             : notesSearched

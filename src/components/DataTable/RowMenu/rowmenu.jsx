@@ -40,7 +40,7 @@ export function RowMenu ({ note, handleDeleteNotes, handleToggleCompleteNotes })
               <BsCheckSquareFill className={styles.iconComplete}/>
             </ListItemIcon>
             {
-              (note.isCompleted ? 'Mark as uncompleted' : 'Mark as completed')
+              (note.isCompleted ? 'Mark Uncompleted' : 'Mark Completed')
             }
           </MenuItem>
           <MenuItem data-testid="rowMenuDelete" onClick={handleDelete}>
