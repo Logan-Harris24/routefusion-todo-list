@@ -70,7 +70,7 @@ export function DataTable(props) {
         selectableRowsVisibleOnly
         selectableRowsComponentProps={{ type: 'radio' }}
         pagination
-        paginationRowsPerPageOptions={[10,25,50,100]}
+        paginationRowsPerPageOptions={[10,25,50,100,250]}
         noDataComponent={<div style={{ padding: '24px' }}>No records to display.</div>}
         {...props}
     />

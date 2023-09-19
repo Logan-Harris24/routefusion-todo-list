@@ -154,6 +154,8 @@ export function Notes({ notes, handleEditNote, handleDeleteNotes, handleComplete
         contextMessage={{ singular: 'note', plural: 'notes', message: 'selected' }}
         onSelectedRowsChange={handleRowSelected}
         clearSelectedRows={toggleCleared}
+        defaultSortFieldId="createdDate"
+        defaultSortAsc={false}
       />
     </div>
   )
